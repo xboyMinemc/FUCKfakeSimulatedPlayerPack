@@ -13,81 +13,38 @@ import {xyz_dododo} from "../../lib/xboyPackage/xyz_dododo";
 
 const overworld = world.getDimension("overworld");
 
-
-const chatSpawnCommand = new Command()
-
-chatSpawnCommand.register(({args})=>args.length === 0, ({entity,location,isEntity})=>{
-    if(!initSucceed)
-        return entity?.sendMessage('[假人] 插件未初始化完成，请重试')
-    // TEST with pid input
-
-    if (isEntity) {
-        const PID = GetPID()
-        const __FlashPlayer__ = world.scoreboard.getObjective('##FlashPlayer##')
-        const simulatedPlayer: SimulatedPlayer = spawnSimulatedPlayer(location, location.dimension, PID)
+const spawnAndRegisterSimulatedPlayer = (location: Vector3, dimension: Dimension, nameTag?: string): void => {
+    const PID = GetPID();
+    const __FlashPlayer__ = world.scoreboard.getObjective('##FlashPlayer##');
+    const simulatedPlayer: SimulatedPlayer = nameTag
+        ? spawnSimulatedPlayerByNameTag(location, dimension, nameTag)
+        : spawnSimulatedPlayer(location, dimension, PID);
 
 
-        simulatedPlayers[PID] = simulatedPlayer
-        simulatedPlayers[simulatedPlayer.id] = PID
+    simulatedPlayers[PID] = simulatedPlayer;
+    simulatedPlayers[simulatedPlayer.id] = PID;
 
-        spawnedEvent.trigger({spawnedSimulatedPlayer: simulatedPlayer, PID})
-        // __FlashPlayer__.setScore(SimulatedPlayer,pid) //Score方案 因为无法为模拟玩家设置分数而放弃
-        __FlashPlayer__.setScore(simulatedPlayer.id, PID)
+    spawnedEvent.trigger({ spawnedSimulatedPlayer: simulatedPlayer, PID });
+    __FlashPlayer__.setScore(simulatedPlayer.id, PID);
+};
 
-        // ScoreBase.AddPoints(<ScoreboardObjective>ScoreBase.GetObject('##FlashPlayer##'),1)
-        // const pidParticipant = __FlashPlayer__.getParticipants().find(P=>P.displayName==='##currentPID')
+const chatSpawnCommand = new Command();
 
-        // TEST END
-    } else {
-        const PID = GetPID()
-        const __FlashPlayer__ = world.scoreboard.getObjective('##FlashPlayer##')
-        const simulatedPlayer: SimulatedPlayer = spawnSimulatedPlayer(location, location.dimension, PID)
+chatSpawnCommand.register(({ args }) => args.length === 0, ({ entity, location }) => {
+    if (!initSucceed)
+        return entity?.sendMessage('[假人] 插件未初始化完成，请重试');
 
+    spawnAndRegisterSimulatedPlayer(location, location.dimension);
+});
 
-        simulatedPlayers[PID] = simulatedPlayer
-        simulatedPlayers[simulatedPlayer.id] = PID
-
-        spawnedEvent.trigger({spawnedSimulatedPlayer: simulatedPlayer, PID})
-        // __FlashPlayer__.setScore(SimulatedPlayer,pid) //Score方案 因为无法为模拟玩家设置分数而放弃
-        __FlashPlayer__.setScore(simulatedPlayer.id, PID)
-    }
-
-
-})
-
-chatSpawnCommand.register(({ args }) => args[0] === '批量', ({ args: [, countString], entity, location, isEntity }) => {
+chatSpawnCommand.register(({ args }) => args[0] === '批量', ({ args: [, countString], entity, location }) => {
     if (!countString) return entity?.sendMessage('[模拟玩家] 命令错误，请提供数字');
     if (!Number.isSafeInteger(Number(countString))) return entity?.sendMessage('[模拟玩家] 命令错误，期待数字却得到 ' + countString);
 
     let count = Number(countString);
     while (count-- > 0)
-        if (isEntity) {
-            const PID = GetPID()
-            const __FlashPlayer__ = world.scoreboard.getObjective('##FlashPlayer##')
-            const simulatedPlayer: SimulatedPlayer = spawnSimulatedPlayer(location, location.dimension, PID)
-
-
-            // add SimulatedPlayer to SimulatedPlayerList,by ues obj <key,value>
-            simulatedPlayers[PID] = simulatedPlayer
-            simulatedPlayers[simulatedPlayer.id] = PID
-
-            spawnedEvent.trigger({spawnedSimulatedPlayer: simulatedPlayer, PID})
-            __FlashPlayer__.setScore(simulatedPlayer.id, PID)
-
-        } else {
-            const PID = GetPID()
-            const __FlashPlayer__ = world.scoreboard.getObjective('##FlashPlayer##')
-            const simulatedPlayer: SimulatedPlayer = spawnSimulatedPlayer(location, location.dimension, PID)
-
-
-            // add SimulatedPlayer to SimulatedPlayerList,by ues obj <key,value>
-            simulatedPlayers[PID] = simulatedPlayer
-            simulatedPlayers[simulatedPlayer.id] = PID
-
-            spawnedEvent.trigger({spawnedSimulatedPlayer: simulatedPlayer, PID})
-            __FlashPlayer__.setScore(simulatedPlayer.id, PID)
-        }
-})
+        spawnAndRegisterSimulatedPlayer(location, location.dimension);
+});
 
 // #56 参考：
 // 假人生成 x y z name 维度序号（数字 0-主世界 1-下界 2-末地）
@@ -119,7 +76,7 @@ chatSpawnCommand.register(
 
         // name
         if (targetName) 
-                nameTag = targetName;
+            nameTag = targetName;
 
         // dimension
         let dimension: Dimension;
@@ -132,19 +89,7 @@ chatSpawnCommand.register(
         }
         dimension ??= senderLocation.dimension ?? overworld;
 
-        const PID = GetPID();
-        const __FlashPlayer__ =
-            world.scoreboard.getObjective('##FlashPlayer##');
-
-        const simulatedPlayer: SimulatedPlayer = nameTag
-            ? spawnSimulatedPlayerByNameTag(location, dimension, nameTag)
-            : spawnSimulatedPlayer(location, dimension, PID);
-
-        simulatedPlayers[PID] = simulatedPlayer;
-        simulatedPlayers[simulatedPlayer.id] = PID;
-
-        spawnedEvent.trigger({ spawnedSimulatedPlayer: simulatedPlayer, PID });
-        __FlashPlayer__.setScore(simulatedPlayer.id, PID);
+        spawnAndRegisterSimulatedPlayer(location, dimension, nameTag);
     }
 );
 
