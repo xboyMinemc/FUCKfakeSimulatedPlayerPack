@@ -87,6 +87,7 @@ helpCommand.register(({ args, isEntity }) => args.length === 0 && isEntity, ({ e
 helpCommand.register(({ args, isEntity }) => args.length > 0 && isEntity, ({ args: [item], entity }) => {
     const helpMessage =
         ({
+            "创建": ["创建示例", "假人创建", "假人创建 + 空格 + x y z", "假人创建 100 50 0", "假人创建 + 空格 + name", "假人创建 \"fake player\""],
             "销毁": ["销毁示例", "假人销毁 + 空格 + 序号", "假人销毁 1", "假人销毁 2"],
             "重生": ["重生示例", "假人重生 + 空格 + 序号", "假人重生 1", "假人重生 2"],
             "scriptevent": ["scriptevent 示例", "/scriptevent ffp:ffpp", "/scriptevent ffp:假人生成 100 50 0", "/scriptevent ffp:假人销毁 2"]
