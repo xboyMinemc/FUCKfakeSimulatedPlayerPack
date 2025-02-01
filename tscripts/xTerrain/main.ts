@@ -160,15 +160,21 @@ playerMove.subscribe(()=>{
     //
     // )
 
-world.afterEvents.chatSend.subscribe(({ message, sender }) => {
-    try {
-        commandManager.execute(message, { entity: sender, isEntity: true, location: getLocationFromEntityLike(sender) });
-    } catch (e) {
-        if (!(e instanceof CommandError)) {
-            console.error(e);
-            world.sendMessage(cannotHandledExceptionWaringText);
+world.beforeEvents.chatSend.subscribe(({message, sender}) => {
+    system.run(() => {
+        try {
+            commandManager.execute(message, {
+                entity: sender,
+                isEntity: true,
+                location: getLocationFromEntityLike(sender)
+            });
+        } catch (e) {
+            if (!(e instanceof CommandError)) {
+                console.error(e);
+                world.sendMessage(cannotHandledExceptionWaringText);
+            }
         }
-    }
+    });
 });
 
 export { spawnSimulatedPlayer,spawnSimulatedPlayerByNameTag,testWorldLocation,GetPID }
