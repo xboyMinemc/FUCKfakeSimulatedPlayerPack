@@ -37,7 +37,6 @@ import '../lib/yumeCommand/scriptEventHandler'
 
 const overworld = world.getDimension('overworld')
 const tickWaitTimes = 20*60*60*24*365
-
 // all of SimulatedPlayer List
 export const simulatedPlayers  = {}
 
@@ -91,7 +90,9 @@ register('我是云梦', '假人', (test:Test) => {
         simulatedPlayer.addTag(SIGN.YUME_SIM_SIGN)
         simulatedPlayer.addTag(SIGN.AUTO_RESPAWN_SIGN)
         try {
+            //@ts-ignore
             simulatedPlayer.setSpawnPoint({...location, dimension})
+            //@ts-ignore
             simulatedPlayer.teleport(location, {dimension})
         } catch (e) {
             if (e instanceof LocationOutOfWorldBoundariesError) {
@@ -136,7 +137,7 @@ register('我是云梦', '假人', (test:Test) => {
 let say = false
 playerMove.subscribe(()=>{
     if (say) return
-    say = true
+    say  = true
     world.sendMessage('[模拟玩家] 初始化完成，输入“假人创建”或“ffpp”')
 })
 
@@ -172,4 +173,5 @@ world.afterEvents.chatSend.subscribe(({ message, sender }) => {
 });
 
 export { spawnSimulatedPlayer,spawnSimulatedPlayerByNameTag,testWorldLocation,GetPID }
+
 

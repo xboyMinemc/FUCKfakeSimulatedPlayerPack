@@ -1,5 +1,4 @@
 // -302 65 -1556
-// @ts-ignore
 import tpsShower  from '../lib/xboyTools/tpsShower';
 
 

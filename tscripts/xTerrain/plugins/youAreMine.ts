@@ -35,7 +35,8 @@ const mainhandItemSwapCommand = new Command();
 mainhandItemSwapCommand.register(({entity,sim}) => {
 
     const SimPlayer:SimulatedPlayer = sim || getSimPlayer.fromView(entity)
-    const s = <EntityEquippableComponent>SimPlayer.getComponent("minecraft:equippable")
+
+    const s = <EntityEquippableComponent><unknown>SimPlayer.getComponent("minecraft:equippable")
 
     const p = entity.getComponent("minecraft:equippable")
     const i = EquipmentSlot['Mainhand'] ?? EquipmentSlot['mainhand']
@@ -53,7 +54,8 @@ const offhandItemSwapCommand = new Command();
 offhandItemSwapCommand.register(({entity,sim}) => {
 
     const SimPlayer:SimulatedPlayer = sim || getSimPlayer.fromView(entity)
-    const s = <EntityEquippableComponent>SimPlayer.getComponent("minecraft:equippable")
+
+    const s = <EntityEquippableComponent><unknown>SimPlayer.getComponent("minecraft:equippable")
 
     const p = entity.getComponent("minecraft:equippable")
     const i = EquipmentSlot['Offhand'] ?? EquipmentSlot['offhand']
@@ -72,7 +74,8 @@ inventorySwapCommand.register(({entity,isEntity,sim}) => {
     if(!isEntity && !sim)return
     const SimPlayer:SimulatedPlayer = sim || getSimPlayer.fromView(entity)
     if(!SimPlayer)return
-    const s = (<EntityInventoryComponent>SimPlayer.getComponent("minecraft:inventory")).container
+
+    const s = (<EntityInventoryComponent><unknown>SimPlayer.getComponent("minecraft:inventory")).container
 
     const p = entity.getComponent("minecraft:inventory").container
 
@@ -102,7 +105,7 @@ equipmentSwapCommand.register(({entity,isEntity,sim}) => {
     const SimPlayer:SimulatedPlayer = sim || getSimPlayer.fromView(entity)
     if(!isEntity && !sim)return
 
-    const s = <EntityEquippableComponent>SimPlayer.getComponent("minecraft:equippable") // SimPlayer
+    const s = <EntityEquippableComponent><unknown>SimPlayer.getComponent("minecraft:equippable") // SimPlayer
 
     const p = entity.getComponent("minecraft:equippable") // player
     for (const i in  EquipmentSlot) {
@@ -129,7 +132,7 @@ returnResCommand.register(({entity,isEntity,sim})=>{
     const SimPlayer:SimulatedPlayer = sim ?? getSimPlayer.fromView(entity)
     if(!SimPlayer)return
 
-    const equip = <EntityEquippableComponent>SimPlayer.getComponent("minecraft:equippable")
+    const equip = <EntityEquippableComponent><unknown>SimPlayer.getComponent("minecraft:equippable")
 
     // emmm你这变量名
     const { location:l, dimension:d } = entity
@@ -145,7 +148,8 @@ returnResCommand.register(({entity,isEntity,sim})=>{
         // 置空
         equip.setEquipment(<EquipmentSlot>i, null) //undefined? new ItemStack('air')?
     }
-    const { container:s } =  <EntityInventoryComponent>SimPlayer.getComponent("minecraft:inventory")
+
+    const { container:s } =  <EntityInventoryComponent><unknown>SimPlayer.getComponent("minecraft:inventory")
 
     for (
         let i = s.size;

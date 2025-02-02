@@ -30,7 +30,7 @@ const GetScoreObject    = ( Objective:ScoreboardObjective | String=undefined) : 
 // 这是什么玩意
 // @ts-ignore
 const GetScorePartic    = (args: Entity | ScoreboardObjective ) : Entity|ScoreboardIdentity[]=>  args ? (args.dimension?Array.from(GetScoreBoard.getParticipants()).find(Participant=>Participant.getEntity()==args):args[0].getParticipants()) : GetScoreBoard.getParticipants();
-// @ts-ignore
+
 const GetScorePoints    = (object : ScoreboardObjective|string,partic: Entity | ScoreboardIdentity | string) : number =>  (<ScoreboardObjective>GetScoreObject(object)).getScore(partic);
 
 // @ts-ignore

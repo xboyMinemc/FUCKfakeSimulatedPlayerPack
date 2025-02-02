@@ -52,7 +52,7 @@ world.afterEvents.entitySpawn.subscribe(({entity: entity}) => {
         )
       )
         &&
-        (       // @ts-ignore
+        (
           queue.fishingHookDespawned_HookArray.set(entity.id, Fisher),
           fishingHookSpawned.trigger({ HookId: entity.id, Fisher: Fisher })
         )
