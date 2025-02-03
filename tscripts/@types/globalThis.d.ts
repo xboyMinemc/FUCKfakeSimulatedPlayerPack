@@ -1,7 +1,8 @@
 import {
     EntityEventOptions,
     Entity,
-    EntityHurtAfterEvent, Vector3,
+    Vector3,
+    type EntityDieAfterEvent,
 } from "@minecraft/server";
 
 
@@ -80,7 +81,7 @@ export class EntityDeadByHurtEventSignal {
  * another entity.
  */
 // @ts-ignore
-export class EntityDeadByHurtEvent extends EntityHurtAfterEvent {
+export class EntityDeadByHurtEvent extends EntityDieAfterEvent {
     // /**
     //  * A summary of the reason that damage was caused.
     //  */

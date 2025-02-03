@@ -1,20 +1,13 @@
+import type { Player } from '@minecraft/server';
 import entityDeadByHurt from '../../lib/xboyEvents/entityDeadByHurt'
 import {simulatedPlayers} from '../main'
 import {SimulatedPlayer} from '@minecraft/server-gametest'
 
-entityDeadByHurt.subscribe(({damageSource,hurtEntity})=>{
-    if(hurtEntity.typeId !== 'minecraft:player')return
-    if(!damageSource)return
+entityDeadByHurt.subscribe(({ damageSource: { damagingEntity }, deadEntity }) => {
+    if (deadEntity.typeId !== 'minecraft:player' || damagingEntity.typeId !== 'minecraft:player') return;
 
-    if(simulatedPlayers[hurtEntity.id])
-        return damageSource ?? damageSource?.damagingEntity['sendMessage']('玩不起，就别玩')
+    if (!(deadEntity.id in simulatedPlayers || damagingEntity.id in simulatedPlayers)) return;
 
-    const PID = simulatedPlayers[damageSource.damagingEntity.id]
-    if(!PID)return
-
-    const SimPlayer = <SimulatedPlayer>simulatedPlayers[PID]
-
-    if(!SimPlayer)return
-
-    hurtEntity['sendMessage']('菜，就多练')
-})
+    (<Player>damagingEntity).sendMessage('玩不起，就别玩');
+    (<Player>deadEntity).sendMessage('菜，就多练');
+});
