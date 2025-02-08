@@ -2,6 +2,7 @@
 import { SimulatedPlayer, LookDuration } from '@minecraft/server-gametest'
 import { Player } from '@minecraft/server'
 import { commandManager } from '../yumeCommand/CommandRegistry'
+import { ModalFormData } from '@minecraft/server-ui';
 
 export  enum  SIGN {
     AUTO_BREAKBLOCK_SIGN = 'AUTO_BREAKBLOCK_SIGN',
@@ -39,9 +40,9 @@ export enum  BEHAVIOR {
     swapMainhandItem = 'swapMainhandItem',
     swapInventory = 'swapInventory',
     swapEquipment = 'swapEquipment',
+    rename = 'rename',
     recycle = 'recycle', // item and exp
     disconnect = 'disconnect',
-    // rename = 'rename',
 }
 
 export const BEHAVIOR_LIST:string[] = Object.keys(BEHAVIOR)
@@ -55,9 +56,9 @@ export enum  BEHAVIOR_ZH {
     swapMainhandItem = '互换主手物品',
     swapInventory = '互换背包',
     swapEquipment = '互换装备',
+    rename = '改名',
     recycle = '回收', // item and exp
     disconnect = '销毁',
-    // rename = '改名',
 }
 
 export const BEHAVIOR_FUNCTION = {
@@ -71,9 +72,17 @@ export const BEHAVIOR_FUNCTION = {
     swapMainhandItem : (sim:SimulatedPlayer,player:Player)=>commandManager.execute('假人主手物品交换',{entity:player,sim}),
     swapInventory : (sim:SimulatedPlayer,player:Player)=>commandManager.execute('假人背包交换',{entity:player,sim}),
     swapEquipment : (sim:SimulatedPlayer,player:Player)=>commandManager.execute('假人装备交换',{entity:player,sim}),
+    rename: async (sim: SimulatedPlayer, player: Player) => {
+        const modalForm = new ModalFormData().title("假人改名");
+        modalForm.textField('新名称', '输入新名称', sim.nameTag);
+        const { canceled, formValues } = await modalForm.show(<any>player);
+        if (canceled) return;
+
+        sim.nameTag = <string>formValues[0];
+        // commandManager.executeCommand('假人改名', [name], { entity: player, sim });
+    },
     recycle : (sim:SimulatedPlayer,player:Player)=>commandManager.execute('假人资源回收',{entity:player,sim}), // item and exp
     disconnect : (sim:SimulatedPlayer)=>commandManager.execute('假人销毁',{sim}),
-    // rename : (sim:SimulatedPlayer,player:Player)=>0,
 }
 export const exeBehavior = (behavior: string) => BEHAVIOR[behavior] && BEHAVIOR_FUNCTION[behavior]
 
